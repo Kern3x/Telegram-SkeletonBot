@@ -1,4 +1,4 @@
-🚀 # Telegram SkeletonBot
+# 🚀 Telegram SkeletonBot
 
 A lightweight starter template for building Telegram bots with **pyTelegramBotAPI (TeleBot)**. It includes only the essentials: a clean structure, config loading, optional DB manager, Docker, and a place for your handlers.
 
