@@ -142,6 +142,3 @@ psycopg2-binary    # if you use Postgres
 - [ ] pytest scaffolding
 - [ ] GitHub Actions (lint/test/build)
 - [ ] ENV-based config switch with sane defaults
-
-## License
-Add a `LICENSE` file (MIT/Apache-2.0/GPL — your choice).
