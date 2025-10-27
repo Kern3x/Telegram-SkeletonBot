@@ -1,16 +1,32 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from contextlib import contextmanager
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-from config import config
-
-
-base_config = config.get("base")
+from config import settings
 
 
-class DBManager:
-    Base = declarative_base()
-    engine = create_engine(base_config.DB_URL)
-    Session = sessionmaker(bind=engine)
+class Base(DeclarativeBase):
+    pass
 
-    def create_tables(self):
-        self.Base.metadata.create_all(self.engine)
+
+engine = create_engine(settings.DB_URL, future=True)
+SessionLocal = sessionmaker(
+    bind=engine, autoflush=False, autocommit=False, expire_on_commit=False
+)
+
+
+def init_db() -> None:
+    Base.metadata.create_all(bind=engine)
+
+
+@contextmanager
+def get_session():
+    session = SessionLocal()
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()

@@ -1,113 +1,70 @@
-from config import config
+from typing import Type
+from sqlalchemy import select, func, update, delete
 
-from app.utils.db_manager import DBManager
-
-# import models by --  from app.models import ...
-
-
-dev_config = config.get("development")
+from app.utils.db_manager import get_session
 
 
 class DataController:
-    def __init__(self) -> None:
-        self.models = dict()
-        self.db_manager = DBManager()
+    def add(self, model_cls: Type, **kwargs):
+        with get_session() as s:
+            obj = model_cls(**kwargs)
+            s.add(obj)
+            s.flush()
+            return obj
 
-    def add_new(self, model, **kwargs):
-        session = self.db_manager.Session(bind=self.db_manager.engine)
+    def get_first(self, model_cls: Type, **filters):
+        with get_session() as s:
+            stmt = select(model_cls).filter_by(**filters).limit(1)
+            return s.scalars(stmt).first()
 
-        try:
-            session.add(self.models.get(model)(**kwargs))
-            session.commit()
-        except Exception:
-            session.rollback()
-        finally:
-            session.close()
+    def get_all(self, model_cls: Type, **filters) -> list:
+        with get_session() as s:
+            stmt = select(model_cls).filter_by(**filters)
+            return list(s.scalars(stmt))
 
-    def get_first(self, model, **kwargs):
-        session = self.db_manager.Session(bind=self.db_manager.engine)
+    def count(self, model_cls: Type, **filters) -> int:
+        with get_session() as s:
+            stmt = select(func.count()).select_from(model_cls).filter_by(**filters)
+            return s.scalar(stmt) or 0
 
-        try:
-            return session.query(self.models.get(model)).filter_by(**kwargs).first()
-        except Exception:
-            session.rollback()
-        finally:
-            session.close()
+    def update_first(self, model_cls: Type, values: dict, **filters) -> int:
+        with get_session() as s:
+            obj = s.scalars(select(model_cls).filter_by(**filters).limit(1)).first()
 
-    def get_all(self, model, **kwargs):
-        session = self.db_manager.Session(bind=self.db_manager.engine)
+            if not obj:
+                return 0
 
-        try:
-            return session.query(self.models.get(model)).filter_by(**kwargs).all()
-        except Exception:
-            session.rollback()
-        finally:
-            session.close()
+            for k, v in values.items():
+                setattr(obj, k, v)
 
-    def get_count(self, model):
-        session = self.db_manager.Session(bind=self.db_manager.engine)
+            return 1
 
-        try:
-            return session.query(self.models.get(model)).count()
-        except Exception:
-            session.rollback()
-        finally:
-            session.close()
+    def update_all(self, model_cls: Type, values: dict, **filters) -> int:
+        with get_session() as s:
+            res = s.execute(
+                update(model_cls)
+                .where(*[getattr(model_cls, k) == v for k, v in filters.items()])
+                .values(**values)
+            )
 
-    def edit_first(self, model, values: dict, operation=None, oper_val=None, **kwargs):
-        session = self.db_manager.Session(bind=self.db_manager.engine)
+            return res.rowcount or 0
 
-        try:
-            record = session.query(self.models.get(model)).filter_by(**kwargs).first()
+    def delete_first(self, model_cls: Type, **filters) -> int:
+        with get_session() as s:
+            obj = s.scalars(select(model_cls).filter_by(**filters).limit(1)).first()
 
-            for key, value in values.items():
-                current_value = getattr(record, key)
+            if not obj:
+                return 0
 
-                if operation == "+":
-                    setattr(record, key, current_value + oper_val)
+            s.delete(obj)
+            return 1
 
-                elif operation == "-":
-                    setattr(record, key, current_value - oper_val)
+    def delete_all(self, model_cls: Type, **filters) -> int:
+        with get_session() as s:
+            res = s.execute(
+                delete(model_cls).where(
+                    *[getattr(model_cls, k) == v for k, v in filters.items()]
+                )
+            )
 
-                else:
-                    setattr(record, key, value)
-
-            session.commit()
-
-        except Exception:
-            session.rollback()
-        finally:
-            session.close()
-
-    def delete_first(self, model, **kwargs):
-        session = self.db_manager.Session(bind=self.db_manager.engine)
-
-        try:
-            session.query(self.models.get(model)).filter_by(**kwargs).delete()
-            session.commit()
-        except Exception:
-            session.rollback()
-        finally:
-            session.close()
-
-    def edit_all(self, model, values: dict, **kwargs):
-        session = self.db_manager.Session(bind=self.db_manager.engine)
-
-        try:
-            session.query(self.models.get(model)).filter_by(**kwargs).update(values)
-            session.commit()
-        except Exception:
-            session.rollback()
-        finally:
-            session.close()
-
-    def delete_all(self, model, **kwargs):
-        session = self.db_manager.Session(bind=self.db_manager.engine)
-
-        try:
-            session.query(self.models.get(model)).filter_by(**kwargs).delete()
-            session.commit()
-        except Exception:
-            session.rollback()
-        finally:
-            session.close()
+            return res.rowcount or 0
