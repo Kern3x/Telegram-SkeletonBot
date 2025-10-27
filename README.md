@@ -20,18 +20,38 @@ A lightweight starter template for building Telegram bots with **pyTelegramBotAP
 ```
 .
 ├─ app/
-│  ├─ bot.py                  # TeleBot initialization, handler registration, start
+│  ├─ database/
+│  │  ├─ __init__.py             # Exports DataController from init_db.py
+│  │  └─ init_db.py              # Class with universal CRUD methods
 │  ├─ handlers/
-│  │  ├─ __init__.py          # Exports TestMessageHandler from message.py
-│  │  └─ message.py           # (add your handlers here; sample below)
+│  │  ├─ commands/               # Directory with command handlers
+│  │  │   ├─ start.py            # Start command handler example
+│  │  │   └─ __init__.py         # Exports command handlers form "commands/" directory
+│  │  ├─ message/                # Directory with message handlers
+│  │  │   ├─ message_handler.py  # Message handler example
+│  │  │   └─ __init__.py         # Exports message handlers form "message/" directory
+│  │  ├─ query/                  # Directory with query handlers
+│  │  │   ├─ query_handler.py    # Query handler example
+│  │  │   └─ __init__.py         # Exports query handlers form "query/" directory
+│  │  └─ __init__.py             # Exports handlers from all directories in "handlers/"
+│  ├─ models/
+│  │  ├─ __init__.py             # (add your models here; sample below)
+│  │  ├─ user.py                 # SQLAlchemy model example
 │  └─ utils/
-│     ├─ __init__.py          # Exports utilities (e.g., Keyboards)
-│     └─ db_manager.py        # SQLAlchemy engine/session + create_tables()
-├─ config.py                   # Reads .env, base/dev configs
-├─ start_bot.py                # Entry point (creates and runs the bot)
-├─ requirements.txt            # Dependencies
-├─ Dockerfile                  # Bot image
-└─ docker-compose.yml          # Bot + (optional) Postgres
+│  │   ├─ keryboards/            # Keyboards directory
+│  │   │   ├─ kb_classes/        # Keyboards class directory
+│  │   │   │   ├─ __init__.py    # Exports all keyboards
+│  │   │   │   └─ test_kbs.py    # Keyboard example
+│  │   │   ├─ __init__.py        # Exports Keyboards class from kb_initer.py
+│  │   │   └─ kb_initer.py       # Main class of Keyboards, which init all keyboards from "kb_classes/" directory 
+│  │   ├─ __init__.py            # Exports utilities (e.g., Keyboards)
+│  │   └─ db_manager.py          # SQLAlchemy engine/session + create_tables()
+│  └─ bot.py                     # TeleBot initialization, handler registration, start
+├─ config.py                     # Reads .env, base/dev configs
+├─ start_bot.py                  # Entry point (creates and runs the bot)
+├─ requirements.txt              # Dependencies
+├─ Dockerfile                    # Bot image
+└─ docker-compose.yml            # Bot + (optional) Postgres
 ```
 
 > **Note:** Ensure `app/handlers/message.py` exists (or update `__init__.py` imports accordingly). Optionally add `app/utils/keyboards.py` if you plan to use custom keyboards.
