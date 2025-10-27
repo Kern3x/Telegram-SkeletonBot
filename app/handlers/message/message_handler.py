@@ -9,4 +9,3 @@ class TestMessageHandler:
         @bot.message_handler(chat_types=["private"])
         def hello_message(message):
             bot.reply_to(message, "Hello user!", reply_markup=self.kb.test_kb())
- 

@@ -14,4 +14,3 @@ class DBManager:
 
     def create_tables(self):
         self.Base.metadata.create_all(self.engine)
- 

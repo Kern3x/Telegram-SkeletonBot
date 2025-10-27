@@ -10,4 +10,3 @@ RUN pip install -r requirements.txt
 COPY . .
 
 CMD ["python", "start_bot.py"]
- 

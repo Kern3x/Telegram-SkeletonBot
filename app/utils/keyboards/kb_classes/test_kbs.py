@@ -12,4 +12,3 @@ class TestKeyboard:
         test.add(tp.KeyboardButton(text="Hello"))
 
         return test
- 

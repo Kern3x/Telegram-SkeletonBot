@@ -9,7 +9,7 @@ services:
       - db
     volumes:
       - bot-data:/app
- 
+
   db:
     image: postgres:latest
     restart: always
