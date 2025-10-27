@@ -36,7 +36,7 @@ A lightweight starter template for building Telegram bots with **pyTelegramBotAP
 │  │  └─ __init__.py             # Exports handlers from all directories in "handlers/"
 │  ├─ models/
 │  │  ├─ __init__.py             # (add your models here; sample below)
-│  │  ├─ user.py                 # SQLAlchemy model example
+│  │  └─ user.py                 # SQLAlchemy model example
 │  └─ utils/
 │  │   ├─ keryboards/            # Keyboards directory
 │  │   │   ├─ kb_classes/        # Keyboards class directory
