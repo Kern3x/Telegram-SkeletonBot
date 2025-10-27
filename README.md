@@ -114,9 +114,7 @@ from telebot.types import Message
 class TestMessageHandler:
     def __init__(self, bot):
         self.bot = bot
-        self.register()
 
-    def register(self):
         @self.bot.message_handler(commands=["start"])
         def handle_start(msg: Message):
             self.bot.reply_to(msg, "Hello! I'm alive ✅")
@@ -157,8 +155,5 @@ psycopg2-binary    # if you use Postgres
 ```
 
 ## Roadmap / TODO
-- [ ] Example SQLAlchemy models + Alembic migrations
-- [ ] Keyboard helpers (`Keyboards`)
 - [ ] pytest scaffolding
 - [ ] GitHub Actions (lint/test/build)
-- [ ] ENV-based config switch with sane defaults
