@@ -33,7 +33,7 @@ class DataController:
 
 
         try:
-
+ 
             session.add(self.models.get(model)(**kwargs))
 
             session.commit()
@@ -45,7 +45,6 @@ class DataController:
         finally:
  
             session.close()
-
 
 
     def get_first(self, model, **kwargs):

@@ -13,7 +13,7 @@ class BaseConfig:
     BOT_TOKEN = os.environ.get("TOKEN")
     DB_URL = ""
 
-
+ 
 class DevelopmentConfig:
     """Development configuration."""
 

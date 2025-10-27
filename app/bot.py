@@ -22,3 +22,4 @@ class TelegramBot:
     def start(self):
         print("Telebot started...")
         self.bot.infinity_polling()
+ 
