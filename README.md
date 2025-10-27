@@ -106,9 +106,9 @@ A lightweight starter template for building Telegram bots with **pyTelegramBotAP
 - You can add an `ENV` variable (e.g., `development` / `production`) and switch configs accordingly.
 
 ## Add Your First Handler
-Create `app/handlers/message.py`:
+Create `app/handlers/message/message.py`:
 ```python
-# app/handlers/message.py
+# app/handlers/message/message.py
 from telebot.types import Message
 
 class TestMessageHandler:
