@@ -1,5 +1,6 @@
 from app.bot import TelegramBot
 
 
-bot = TelegramBot()
-bot.start()
+if __name__ == "__main__":
+    bot = TelegramBot()
+    bot.start()

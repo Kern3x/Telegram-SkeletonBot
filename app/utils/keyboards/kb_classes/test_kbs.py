@@ -1,14 +1,17 @@
-from config import config
 from telebot import types as tp
 
 
-dev_config = config.get("development")
-
-
 class TestKeyboard:
-    def test_kb(self):
+    def test_kb(self) -> tp.ReplyKeyboardMarkup:
         test = tp.ReplyKeyboardMarkup(resize_keyboard=True)
 
         test.add(tp.KeyboardButton(text="Hello"))
 
         return test
+
+    def make_inline_test_kb(self) -> tp.InlineKeyboardMarkup:
+        kb = tp.InlineKeyboardMarkup(row_width=3)
+
+        kb.add(tp.InlineKeyboardButton("Open website", url="https://example.com"))
+
+        return kb

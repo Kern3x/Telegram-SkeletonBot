@@ -1,24 +1,44 @@
+import logging
+
 from telebot import TeleBot
 
-from config import config
-from app.utils.db_manager import DBManager
-from app.handlers import TestMessageHandler
+from config import settings
+import app.models as models
+from app.utils.db_manager import init_db
+from app.handlers.message.message_handler import TestMessageHandler
+from app.handlers.commands.start import TestCommandHandler
+from app.handlers.query.query_handler import TestQueryHandler
+# example: from app.handlers.commands.some_handler import SomeHandler
 
 
-dev_config = config.get("development")
-base_config = config.get("base")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger("bot")
 
 
 class TelegramBot:
     def __init__(self) -> None:
-        DBManager().create_tables()
+        self.bot = TeleBot(settings.BOT_TOKEN, parse_mode="HTML")
+        self._register_handlers()
 
-        self.bot = TeleBot(base_config.BOT_TOKEN)
-        self.bot.parse_mode = "html"
-
-        # Register message handlers
+    def _register_handlers(self) -> None:
+        # Initialize each class handler that registers its decorators internally
         TestMessageHandler(self.bot)
+        TestCommandHandler(self.bot)
+        TestQueryHandler(self.bot)
+        # SomeHandler(self.bot)
+        # QueryHandler(self.bot)
+        # ...
 
-    def start(self):
-        print("Telebot started...")
-        self.bot.infinity_polling()
+    def start(self) -> None:
+        init_db()  # models already imported — tables will be created
+
+        logger.info("TeleBot started…")
+
+        self.bot.infinity_polling(
+            skip_pending=True,
+            timeout=20,
+            long_polling_timeout=25,
+        )

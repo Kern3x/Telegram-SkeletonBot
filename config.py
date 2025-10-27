@@ -1,21 +1,20 @@
 import os
-
 from dotenv import load_dotenv
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(BASE_DIR, ".env"))
+load_dotenv()
 
 
-class BaseConfig:
-    """Base configuration."""
+class Settings:
+    def __init__(self):
+        self.BOT_TOKEN = os.getenv("TOKEN")
+        self.DB_URL = os.getenv("DATABASE_URL") or os.getenv("DB_URL")
 
-    BOT_TOKEN = os.environ.get("TOKEN")
-    DB_URL = ""
+        if not self.BOT_TOKEN:
+            raise RuntimeError("TOKEN not set in .env")
+
+        if not self.DB_URL:
+            raise RuntimeError("DATABASE_URL/DB_URL not set in .env")
 
 
-class DevelopmentConfig:
-    """Development configuration."""
-
-
-config = dict(base=BaseConfig, development=DevelopmentConfig)
+settings = Settings()
